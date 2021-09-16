@@ -34,3 +34,15 @@ def user_bets(request):
         bets = Bet.objects.filter(user_id=request.user.id)
         serializer =BetSerializer(bets, many=True)
         return Response(serializer.data)
+
+
+
+# code that i had before using serializer, would allow me to post a bet, but would not link the game_id to the game, would
+# return null value and then i would have to manually change it as an admin 
+# def user_bets(request):
+#     if request.method == 'POST':
+#         serializer = BetSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save(user=request.user)
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
