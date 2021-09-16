@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication.apps.AuthenticationConfig',
     'games.apps.GamesConfig',
-    'bets.apps.BetsConfig'
+    'bets.apps.BetsConfig',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,3 +131,5 @@ try:
     from CSBackEnd.local_settings import *
 except ImportError:
     pass
+
+CORS_ORIGIN_ALLOW_ALL = True

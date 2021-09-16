@@ -20,11 +20,16 @@ def get_all_bets(request):
 @permission_classes([IsAuthenticated])
 def user_bets(request):
     if request.method == 'POST':
-        serializer = BetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user_id= request.user.id
+            game_id= request.data.get('game_id')
+            risk= request.data.get('risk')
+            day_placed = request.data.get('day_placed')
+            newBet = Bet(user_id=user_id, game_id=game_id,risk=risk,day_placed=day_placed)
+            newBet.save()
+            return Response(status=status.HTTP_201_CREATED)
+        except(error):
+            return Response(error, status=status.HTTP_400_BAD_REQUEST) 
     elif request.method == 'GET':
         bets = Bet.objects.filter(user_id=request.user.id)
         serializer =BetSerializer(bets, many=True)
