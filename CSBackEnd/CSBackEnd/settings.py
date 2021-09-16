@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication.apps.AuthenticationConfig',
     'games.apps.GamesConfig',
+    'bets.apps.BetsConfig'
 ]
 
 MIDDLEWARE = [
