@@ -7,4 +7,6 @@ class Bet(models.Model):
     game = models.ForeignKey('games.Game', blank=True, null=True, on_delete=models.CASCADE)
     risk = models.IntegerField()
     day_placed = models.DateField()
+    oddspicked = models.IntegerField()
+    
 

@@ -17,7 +17,7 @@ def get_all_bets(request):
 
 
 @api_view(['POST', 'GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def user_bets(request):
     if request.method == 'POST':
         try:
@@ -25,7 +25,8 @@ def user_bets(request):
             game_id= request.data.get('game_id')
             risk= request.data.get('risk')
             day_placed = request.data.get('day_placed')
-            newBet = Bet(user_id=user_id, game_id=game_id,risk=risk,day_placed=day_placed)
+            oddspicked = request.data.get('oddspicked')
+            newBet = Bet(user_id=user_id, game_id=game_id,risk=risk,day_placed=day_placed, oddspicked=oddspicked)
             newBet.save()
             return Response(status=status.HTTP_201_CREATED)
         except(error):
