@@ -16,7 +16,7 @@ def get_all_bets(request):
     return Response(serializer.data)
 
 
-@api_view(['POST', 'GET'])
+@api_view(['POST', 'GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_bets(request):
     if request.method == 'POST':
@@ -35,6 +35,10 @@ def user_bets(request):
         bets = Bet.objects.filter(user_id=request.user.id)
         serializer =BetSerializer(bets, many=True)
         return Response(serializer.data)
+    elif request.method == 'DELETE':
+        bets = Bet.objects.all().delete()
+        return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
+
 
 
 

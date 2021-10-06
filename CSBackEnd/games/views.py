@@ -14,7 +14,7 @@ def get_all_games(request):
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 
-@api_view(['POST', 'GET'])
+@api_view(['POST', 'GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_games(request):
 
@@ -30,3 +30,6 @@ def user_games(request):
         games = Game.objects.filter(user_id=request.user.id)
         serializer = GameSerializer(games, many=True)
         return Response(serializer.data)
+    elif request.method == 'DELETE':
+        games = Game.objects.all().delete()
+        return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)

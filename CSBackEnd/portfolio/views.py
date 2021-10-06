@@ -36,6 +36,16 @@ def user_Portfolio(request):
             serializer.save(user=request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        portfolio = Portfolio.objects.all().delete()
-        return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
+    # elif request.method == 'DELETE':
+    #     portfolio = Portfolio.objects.all().delete()
+    #     return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['DELETE'])
+def portfolio_delete(request, pk):
+    try: 
+        linkedPortfolio = Portfolio.objects.get(pk=pk) 
+    except Portfolio.DoesNotExist:
+        return Response({'something is happening'}, status=status.HTTP_404_NOT_FOUND) 
+    if request.method == 'DELETE':
+        linkedPortfolio.delete() 
+        return Response({'message': 'Portfolio was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
