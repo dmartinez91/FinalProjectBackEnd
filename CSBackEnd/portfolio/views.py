@@ -1,6 +1,8 @@
+from django.http.response import JsonResponse
 from rest_framework import serializers, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import JSONParser 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from .models import Portfolio
@@ -14,7 +16,7 @@ def get_all_portoflios(request):
     serializer = PortfolioSerializer(portfolio, many=True)
     return Response(serializer.data)
 
-@api_view(['POST', 'GET', 'PUT', 'DELETE'])
+@api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
 def user_Portfolio(request):
 
@@ -30,22 +32,30 @@ def user_Portfolio(request):
         portfolio = Portfolio.objects.filter(user_id=request.user.id)
         serializer = PortfolioSerializer(portfolio, many=True)
         return Response(serializer.data)
-    elif request.method == 'PUT':
-        serializer = PortfolioSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        portfolio = Portfolio.objects.all().delete()
-        return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
+    # elif request.method == 'PUT':
+    #     serializer = PortfolioSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save(user=request.user)
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # elif request.method == 'DELETE':
+    #     portfolio = Portfolio.objects.all().delete()
+    #     return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
 
-# @api_view(['DELETE'])
-# def portfolio_delete(request, pk):
-#     try: 
-#         linkedPortfolio = Portfolio.objects.get(pk=pk) 
-#     except Portfolio.DoesNotExist:
-#         return Response({'something is happening'}, status=status.HTTP_404_NOT_FOUND) 
-#     if request.method == 'DELETE':
-#         linkedPortfolio.delete() 
-#         return Response({'message': 'Portfolio was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+@api_view(['DELETE', 'PUT'])
+def portfolio_delete_update(request, pk):
+    try: 
+        linkedPortfolio = Portfolio.objects.get(pk=pk) 
+    except Portfolio.DoesNotExist:
+        return Response({'something is happening'}, status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'PUT':
+        portfolio_data =  JSONParser().parse(request)
+        serializer = PortfolioSerializer(linkedPortfolio, data=portfolio_data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        linkedPortfolio.delete() 
+        return Response({'message': 'Portfolio was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+

@@ -16,7 +16,7 @@ def get_all_bets(request):
     return Response(serializer.data)
 
 
-@api_view(['POST', 'GET', 'DELETE'])
+@api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
 def user_bets(request):
     if request.method == 'POST':
@@ -35,19 +35,14 @@ def user_bets(request):
         bets = Bet.objects.filter(user_id=request.user.id)
         serializer =BetSerializer(bets, many=True)
         return Response(serializer.data)
-    elif request.method == 'DELETE':
-        bets = Bet.objects.all().delete()
-        return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
 
 
-
-
-# code that i had before using serializer, would allow me to post a bet, but would not link the game_id to the game, would
-# return null value and then i would have to manually change it as an admin 
-# def user_bets(request):
-#     if request.method == 'POST':
-#         serializer = BetSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save(user=request.user)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['DELETE'])
+def delete_betslip(request, pk):
+    try: 
+        specificBet = Bet.objects.get(pk=pk) 
+    except Bet.DoesNotExist:
+        return Response({'something is happening'}, status=status.HTTP_404_NOT_FOUND) 
+    if request.method == 'DELETE':
+        specificBet.delete() 
+        return Response({'message': 'Portfolio was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
