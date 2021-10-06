@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
     'games.apps.GamesConfig',
     'bets.apps.BetsConfig',
+    'portfolio.apps.PortfolioConfig',
     'corsheaders'
 ]
 
