@@ -14,7 +14,7 @@ def get_all_portoflios(request):
     serializer = PortfolioSerializer(portfolio, many=True)
     return Response(serializer.data)
 
-@api_view(['POST', 'GET', 'PUT'])
+@api_view(['POST', 'GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_Portfolio(request):
 
@@ -36,3 +36,6 @@ def user_Portfolio(request):
             serializer.save(user=request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        portfolio = Portfolio.objects.all().delete()
+        return Response({'DELETED'}, status=status.HTTP_204_NO_CONTENT)
