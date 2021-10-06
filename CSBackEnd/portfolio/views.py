@@ -30,3 +30,9 @@ def user_Portfolio(request):
         portfolio = Portfolio.objects.filter(user_id=request.user.id)
         serializer = PortfolioSerializer(portfolio, many=True)
         return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = PortfolioSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
